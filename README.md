@@ -1,5 +1,8 @@
 # Interruption Layer
-Stops risky agent actions before they execute.
+
+Agents can execute before humans can react.
+
+This layer stops risky actions **before they run**.
 
 ```bash
 $ python demo.py
@@ -7,7 +10,6 @@ $ python demo.py
 [EXECUTED] cd /
 [INTERRUPTED] Low confidence (0.4) on risky action
 [INTERRUPTED] Dangerous SQL detected
-Shipped May 1st, 2026. Blocked rm -rf / and DELETE FROM users;.
 
 ⸻
 
