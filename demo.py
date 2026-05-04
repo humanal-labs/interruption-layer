@@ -1,38 +1,46 @@
-from interruption import should_stop
+import time
 
-history = []
+def should_interrupt(task):
+    # Rule 1: destructive commands
+    if task["tool"] == "bash" and "rm -rf" in task["cmd"]:
+        return True, "Destructive command"
 
-def run_action(action, confidence):
-    stop, reason = should_stop(action, confidence, history)
+    # Rule 2: low confidence + high cost
+    if task["confidence"] < 0.7 and task["cost"] > 500:
+        return True, "Low confidence, high cost"
 
-    if stop:
-        print(f"[INTERRUPTED] {reason}")
-        print(f"  action: {action}")
-        print()
+    return False, None
+
+
+def governor(task):
+    interrupt, reason = should_interrupt(task)
+
+    if interrupt:
+        print(f"\n⚠️ GOVERNOR TRIGGERED: {reason}")
+        print("Pausing for 10 seconds...\n")
+
+        # Simulated pause (can be replaced with human approval)
+        time.sleep(3)
+
+        print("Action requires review before execution.\n")
+        return False
     else:
-        print(f"[EXECUTED] {action}")
-        history.append(action)
-        print()
+        print(f"\n✅ Executed: {task['cmd']} (cost: ${task['cost']})\n")
+        return True
 
-print("Interruption Layer Demo")
-print("-----------------------")
 
-print("Case 1: Safe action")
-run_action("ls", 0.9)
+# ---- Simulation ---- #
 
-print("Case 2: Low-confidence risky shell command")
-run_action("rm -rf /", 0.4)
+tasks = [
+    {"tool": "api", "cmd": "check_inventory", "confidence": 0.95, "cost": 5},
+    {"tool": "api", "cmd": "place_order", "confidence": 0.65, "cost": 18000},
+    {"tool": "bash", "cmd": "rm -rf /data", "confidence": 0.9, "cost": 0},
+    {"tool": "api", "cmd": "update_status", "confidence": 0.98, "cost": 2},
+]
 
-print("Case 3: Dangerous SQL")
-run_action("DELETE FROM users;", 0.9)
+print("=== Running Agent Simulation ===\n")
 
-print("Case 4: Repeated loop")
-run_action("retry deploy", 0.9)
-run_action("retry deploy", 0.9)
-run_action("retry deploy", 0.9)
-run_action("retry deploy", 0.9)
+for t in tasks:
+    governor(t)
 
-print("Summary")
-print("-------")
-print("Agents can execute before humans can react.")
-print("This layer interrupts risky actions before they run.")
+print("\n=== End ===")
