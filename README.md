@@ -45,21 +45,20 @@ Executed in sequence, each action looks reasonable.
 Executed at speed, they drift.
 
 ⸻
-
-The Fix
+## The Fix
 
 We don’t add friction everywhere.
 
-We restore the missing moment.
+We restore the missing control point.
 
-A lightweight interruption,
+A lightweight governor:
 triggered only when signals suggest drift.
 
 Not a blocker.
-A control point.
 
+A control point that lets the system correct itself.
+This is what disappears first when systems speed up.
 ⸻
-
 Example
 
 A single action:
