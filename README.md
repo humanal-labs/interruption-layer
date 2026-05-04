@@ -2,126 +2,123 @@
 
 The missing control point for autonomous systems.
 
+---
+
+## What it does
+
+Prevents small deviations from compounding in autonomous systems.
+
+- Catches drift before it becomes visible  
+- Adds a 10s pause only on high-risk actions  
+- Preserves speed on low-risk tasks  
+
+---
+
 In physical systems, control doesn’t only come from formal rules.
 
-It comes from small, informal moments:
-a second look,
-a hesitation,
-a pause before passing something on.
+It comes from small, informal moments:  
+a second look, a hesitation, a pause before passing something on.
 
-These aren’t designed.
-But they act as a buffer.
+These aren’t designed. But they act as a buffer.
 
-In manufacturing, they show up as:
-machine cycles,
-handover points,
-informal checks.
+In manufacturing, they show up as machine cycles, handover points, informal checks.
 
 They slow things down just enough to catch drift.
 
 Agents removed these for speed.
 
-What remains is fast execution —
-without the moment that corrects the system.
+What remains is fast execution — without the moment that corrects the system.
 
 This reintroduces that moment.
-⸻
 
-The Problem
+---
+
+## The Problem
 
 When systems speed up, these are the first things to disappear.
 
-People trust the system more.
+People trust the system more.  
 Or move things through to keep flow.
 
-What remains is fast execution,
-without the moment that catches drift.
+What remains is fast execution, without the moment that catches drift.
 
-Individually correct.
-Systemically wrong.
+Individually correct. Systemically wrong.
 
-Executed in sequence, each action looks reasonable.
-
+Executed in sequence, each action looks reasonable.  
 Executed at speed, they drift.
 
-⸻
+---
+
 ## The Fix
 
 We don’t add friction everywhere.
 
 We restore the missing control point.
 
-A lightweight governor:
-triggered only when signals suggest drift.
+A lightweight governor, triggered only when signals suggest drift.
 
-Not a blocker.
-
+Not a blocker.  
 A control point that lets the system correct itself.
-This is what disappears first when systems speed up.
-⸻
-Example
+
+---
+
+## Example
 
 A single action:
 
-task = {
-“tool”: “api”,
-“cmd”: “place_order”,
-“confidence”: 0.65,
-“cost”: 18000
-}
-
+```python
+task = {"tool": "api", "cmd": "place_order", "confidence": 0.65, "cost": 18000}
 Individually, it looks correct.
 
-Now apply the interruption:
-
+Now apply the governor:
 def should_interrupt(task):
-if task[“tool”] == “bash” and “rm -rf” in task[“cmd”]:
-return True, “Destructive command”
+    if task["tool"] == "bash" and "rm -rf" in task["cmd"]:
+        return True, "Destructive command"
 
-if task["confidence"] < 0.7 and task["cost"] > 500:
-    return True, "Low confidence, high cost"
+    if task["confidence"] < 0.7 and task["cost"] > 500:
+        return True, "Low confidence, high cost"
 
-return False, None
+    return False, None
+
 
 interrupt, reason = should_interrupt(task)
 
 if interrupt:
-print(f”PAUSED: {reason}”)
+    print(f"GOVERNOR TRIGGERED: {reason}")
+    print("Pausing for 10 seconds...")
+Output: GOVERNOR TRIGGERED: Low confidence, high cost
+Pausing for 10 seconds...
+Result
 
-Output:
+* Prevented a $18k incorrect purchase order
+* 0 interruptions on low-cost tasks
+* Triggered only on high-risk conditions
 
-PAUSED: Low confidence, high cost
+Equivalent to a human “second look” before execution.
 
 ⸻
 
-At small scale, this is nothing.
+Example Use Cases
 
-At scale, this is the difference between a normal system
-and one that drifts without correction.
+* Procurement agents (prevent wrong purchase orders)
+* QA automation (catch drift before field failures)
+* Infrastructure agents (prevent destructive commands)
 
-⸻
-## Demo
-
-```bash
+Anywhere small decisions compound into large cost.
+DEMO
 python demo.py
-Simulates an agent executing actions at speed.
+Simulates an agent executing actions at speed:
 
 * Low-risk actions pass through
 * High-cost, low-confidence actions trigger a pause
 * Destructive commands are intercepted
 
-Example output:
+⸻
 
-⚠️ GOVERNOR TRIGGERED: Low confidence, high cost
-Pausing for 10 seconds…
-Action requires review before execution.
+Insight
 
-At small scale, each action looks fine.
-At scale, this prevents drift before it compounds.
-Why it matters
+You don’t lose control immediately.
+You lose early warning.
 
-No single action is wrong.
+This layer restores that signal.
 
-The system drifts.
-
-This brings back the moment where it can correct itself.
