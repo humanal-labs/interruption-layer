@@ -1,17 +1,30 @@
-Interruption Layer
+# Governor
 
-A digital buffer for autonomous agents.
+The missing control point for autonomous systems.
 
-In real systems, control doesn’t only come from formal checks.
+In physical systems, control doesn’t only come from formal rules.
 
 It comes from small, informal moments:
 a second look,
 a hesitation,
 a pause before passing something on.
 
-These are not designed.
+These aren’t designed.
 But they act as a buffer.
 
+In manufacturing, they show up as:
+machine cycles,
+handover points,
+informal checks.
+
+They slow things down just enough to catch drift.
+
+Agents removed these for speed.
+
+What remains is fast execution —
+without the moment that corrects the system.
+
+This reintroduces that moment.
 ⸻
 
 The Problem
