@@ -24,6 +24,9 @@ Its purpose is to identify, classify, and eventually detect forms of behavioral 
 
 Trust Principle
 
+Governor is not an observability framework.
+Governor is a trust observability framework. 
+
 Healthy ≠ Trustworthy
 
 A system can report healthy operational metrics while its actual behavior diverges from its intended purpose.
